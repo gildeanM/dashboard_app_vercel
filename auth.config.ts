@@ -20,8 +20,11 @@ export const authConfig = {
         return true;
 
     },
+    
   },
   providers: [],
   trustHost: true,
-  secret: process.env.AUTH_SECRET
+  secret: process.env.AUTH_SECRET,
+  basePath: process.env.AUTH_URL
+
 } satisfies NextAuthConfig;
