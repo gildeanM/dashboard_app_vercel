@@ -1,4 +1,6 @@
 import type { NextAuthConfig } from 'next-auth';
+import credentials from 'next-auth/providers/credentials';
+
  
 export const authConfig = {
   pages: {
@@ -22,9 +24,9 @@ export const authConfig = {
     },
     
   },
-  providers: [],
+  providers: [credentials],
   trustHost: true,
+  basePath: '/auth',
   secret: process.env.AUTH_SECRET,
   
-
 } satisfies NextAuthConfig;

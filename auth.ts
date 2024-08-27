@@ -19,7 +19,6 @@ async function getUser(email: string): Promise<User | undefined> {
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  secret: process.env.AUTH_SECRET,
   providers: [credentials({
     async authorize(credentials){
         const parsedCredentials = z.object({
