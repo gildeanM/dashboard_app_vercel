@@ -1,12 +1,15 @@
 import type { NextAuthConfig } from 'next-auth';
-import credentials from 'next-auth/providers/credentials';
+
 
  
 export const authConfig = {
   pages: {
     signIn: '/login',
-
   },
+  providers: [],
+  trustHost: true,
+  basePath: '/auth',
+  secret: process.env.AUTH_SECRET,
   callbacks: {
     authorized({ auth , request: { nextUrl }}){
         const isLoggedIn = !!auth?.user
@@ -15,18 +18,11 @@ export const authConfig = {
             if(isLoggedIn) return true;
             return false;
         }else if(isLoggedIn){
-          
           return Response.redirect(new URL('/dashboard', nextUrl));
-            
         }
         return true;
 
     },
-    
-  },
-  providers: [credentials],
-  trustHost: true,
-  basePath: '/auth',
-  secret: process.env.AUTH_SECRET,
+  }
   
 } satisfies NextAuthConfig;
