@@ -5,7 +5,6 @@ export const authConfig = {
     signIn: '/login',
 
   },
-  basePath: '/auth',
   secret: process.env.AUTH_SECRET,
   providers: [],
   callbacks: {
