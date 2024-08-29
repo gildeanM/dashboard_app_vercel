@@ -1,15 +1,13 @@
 import type { NextAuthConfig } from 'next-auth';
-
-
  
 export const authConfig = {
   pages: {
     signIn: '/login',
+
   },
-  providers: [],
-  trustHost: true,
   basePath: '/auth',
   secret: process.env.AUTH_SECRET,
+  providers: [],
   callbacks: {
     authorized({ auth , request: { nextUrl }}){
         const isLoggedIn = !!auth?.user
