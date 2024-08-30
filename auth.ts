@@ -16,10 +16,10 @@ async function getUser(email: string): Promise<User | undefined> {
     }
 }
 
+const {pages,callbacks,trustHost,secret} = authConfig
 
 export const { auth, signIn, signOut } = NextAuth({
-  ...authConfig,
-    
+  
   providers: [Credentials({
     
     async authorize(credentials){
@@ -41,5 +41,11 @@ export const { auth, signIn, signOut } = NextAuth({
         return null
 
     }
-  })]
+    
+  })],
+  pages,
+  callbacks,
+  trustHost,
+  secret
+  
 });
