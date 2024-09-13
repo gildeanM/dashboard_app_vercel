@@ -7,7 +7,7 @@ import { prisma } from './app/lib/prisma';
 import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcrypt'
  
-async function getUser(email: string) {
+export async function getUser(email: string) {
     try {
         // const user = await sql<User>`SELECT * FROM users WHERE email=${email}`
         const user = await prisma.users.findUnique({
@@ -25,7 +25,7 @@ async function getUser(email: string) {
 
 const {pages,callbacks,trustHost,secret} = authConfig
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { auth, signIn, signOut} = NextAuth({
   
   providers: [Credentials({
     
@@ -40,6 +40,7 @@ export const { auth, signIn, signOut } = NextAuth({
             const user = await getUser(email)
             if(!user) return null;
 
+            
             const passwordsMatch =  await bcrypt.compare(password, user.password);
             if(passwordsMatch) return user;
 

@@ -4,9 +4,11 @@ import { z } from 'zod';
 // import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { signIn} from '@/auth';
+import { getUser, signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { prisma } from './prisma';
+import bcrypt from 'bcrypt'
+
 
 const FormSchema = z.object({
     id: z.string(),
@@ -23,7 +25,22 @@ const FormSchema = z.object({
 
 })
 
+const FormUserSchema = z.object({
+    id: z.string(),
+    name: z.string({
+      invalid_type_error: 'Por favor escreva seu nome'
+    }),
+    email: z.string({
+      invalid_type_error: 'Por favor escreva seu email'
+    }),
+    password: z.string({
+      invalid_type_error: 'Por favor escreva sua senha'
+    })
+})
+
+
 const CreateInvoice = FormSchema.omit({id:true, date:true})
+const CreateUser = FormUserSchema.omit({id:true})
 
 export type State = {
   errors?: {
@@ -33,6 +50,17 @@ export type State = {
   };
   message?: string | null;
 };
+
+export type UserState = {
+  errors?: {
+    name?: string[];
+    email?: string[];
+    password?: string[];
+  };
+  message?: string | null;
+};
+
+
 
 export async function createInvoice(prevState: State, formData: FormData){
 
@@ -166,4 +194,57 @@ export async function authenticate(
     }
     throw error
   }
+}
+
+export async function registerUser(prevState: UserState|undefined, formData: FormData){
+ 
+  const parsedForm = CreateUser.safeParse({
+    name: formData.get('name'),
+    email: formData.get('email'),
+    password: formData.get('password')
+  })
+  
+  
+  
+  //   const parsedForm = z.object({
+    //     name: z.string(),
+    //     email: z.string(),
+    //     password: z.string().min(6)
+    //  }).safeParse(formData)
+    
+    if (!parsedForm.success) {
+      return {
+        errors: parsedForm.error.flatten().fieldErrors,
+        message: 'Missing Fields. Failed to Register.',
+      };
+    }
+    const { name, email, password } = parsedForm.data
+    
+    
+    try {
+      const user = await getUser(email)
+      if(user){
+        throw new Error('Esse email já está registrado!')
+      };
+
+      const cryptedPassword = await bcrypt.hash(password, 3)
+
+      await prisma.users.create({
+        data:{
+          name,
+          email,
+          password: cryptedPassword
+        }
+      })
+      await signIn('credentials', { email, password })
+      
+  } catch (error) {
+    return {
+      message: 'Database Error: Failed to Register.',
+      };
+  }finally{
+    revalidatePath('/dashboard');
+    redirect('/dashboard');
+  }
+
 }
