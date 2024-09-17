@@ -4,7 +4,7 @@ export const authConfig = {
   
   pages: {
     signIn: '/login',
-    newUser: '/register'
+    newUser: '/register',
 
   },
   callbacks: {

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Image from 'next/image';
+import LatestInvoices from './ui/dashboard/latest-invoices';
+import RevenueChart from './ui/dashboard/revenue-chart';
 
 export default function Page() {
   return (
@@ -41,6 +43,7 @@ export default function Page() {
             alt="Screenshots of the dashboard project showing mobile version"
           />
         </div>
+        
       </div>
     </main>
   );
