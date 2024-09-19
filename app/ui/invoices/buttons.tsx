@@ -1,8 +1,15 @@
+'use client'
+
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { useState } from 'react';
+import { DeleteModal } from './delete-modal';
 import { deleteInvoice } from '@/app/lib/actions';
 
 export function CreateInvoice() {
+
+  
+
   return (
     <Link
       href="/dashboard/invoices/create"
@@ -28,15 +35,19 @@ export function UpdateInvoice({ id }: { id: string }) {
 export function DeleteInvoice({ id }: { id: string }) {
 
   const deleteInvoiceWithId = deleteInvoice.bind(null, id)
+  const [isModalOpen, setIsModalOpen] =  useState(false)
+  
+  const closeModal = () => setIsModalOpen(false)
+  const confirmDelete = () => closeModal()
+  
 
   return (
     <>
-    <form action={deleteInvoiceWithId}>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
+      <button className="rounded-md border p-2 hover:bg-gray-100" onClick={()=>setIsModalOpen(true)}>
         <span className="sr-only">Deletar</span>
         <TrashIcon className="w-5" />
       </button>
-    </form>
+      <DeleteModal isOpen={isModalOpen} onConfirm={confirmDelete} onClose={closeModal} onDelete={deleteInvoiceWithId}/>
     </>
   );
 }
